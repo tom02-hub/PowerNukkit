@@ -1,13 +1,16 @@
 package cn.nukkit.item;
 
+import cn.nukkit.api.Since;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 
+@Since("1.3.2.0-PN")
 public class RuntimeItemMapping {
 
     private final Int2IntMap legacyNetworkMap;
     private final Int2IntMap networkLegacyMap;
     private final byte[] itemDataPalette;
 
+    @Since("1.3.2.0-PN")
     public RuntimeItemMapping(byte[] itemDataPalette, Int2IntMap legacyNetworkMap, Int2IntMap networkLegacyMap) {
         this.itemDataPalette = itemDataPalette;
         this.legacyNetworkMap = legacyNetworkMap;
@@ -16,6 +19,7 @@ public class RuntimeItemMapping {
         this.networkLegacyMap.defaultReturnValue(-1);
     }
 
+    @Since("1.3.2.0-PN")
     public int getNetworkFullId(Item item) {
         int fullId = RuntimeItems.getFullId(item.getId(), item.hasMeta() ? item.getDamage() : -1);
         int networkId = this.legacyNetworkMap.get(fullId);
@@ -29,6 +33,7 @@ public class RuntimeItemMapping {
         return networkId;
     }
 
+    @Since("1.3.2.0-PN")
     public int getLegacyFullId(int networkId) {
         int fullId = networkLegacyMap.get(networkId);
         if (fullId == -1) {
@@ -37,6 +42,7 @@ public class RuntimeItemMapping {
         return fullId;
     }
 
+    @Since("1.3.2.0-PN")
     public byte[] getItemDataPalette() {
         return this.itemDataPalette;
     }

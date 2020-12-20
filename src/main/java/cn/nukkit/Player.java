@@ -1,6 +1,7 @@
 package cn.nukkit;
 
 import cn.nukkit.AdventureSettings.Type;
+import cn.nukkit.api.DeprecationDetails;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.block.*;
@@ -153,7 +154,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected final BiMap<Integer, Inventory> windowIndex = windows.inverse();
     protected final Set<Integer> permanentWindows = new IntOpenHashSet();
     private boolean inventoryOpen;
-    protected int closingWindowId = Integer.MIN_VALUE;
+    @Since("1.3.2.0-PN") protected int closingWindowId = Integer.MIN_VALUE;
 
     protected int messageCounter = 2;
 
@@ -1039,6 +1040,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     @Deprecated
+    @DeprecationDetails(by = "Cloudburst", since = "1.3.2.0-PN", reason = "338fa4fe Move batching code down to RakNetInterface")
     public boolean batchDataPacket(DataPacket packet) {
         return this.dataPacket(packet);
     }
@@ -1080,6 +1082,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * @return packet successfully sent
      */
     @Deprecated
+    @DeprecationDetails(by = "Cloudburst", since = "1.3.2.0-PN", reason = "338fa4fe Move batching code down to RakNetInterface")
     public boolean directDataPacket(DataPacket packet) {
         return this.dataPacket(packet);
     }
@@ -4822,6 +4825,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.removeWindow(inventory, false);
     }
 
+    @Since("1.3.2.0-PN")
     protected void removeWindow(Inventory inventory, boolean isResponse) {
         inventory.close(this);
         if (isResponse && !this.permanentWindows.contains(this.getWindowId(inventory)))
@@ -4913,6 +4917,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
+    @Since("1.3.2.0-PN")
     public int getClosingWindowId() {
         return this.closingWindowId;
     }
