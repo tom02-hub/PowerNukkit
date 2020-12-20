@@ -2,10 +2,15 @@ package cn.nukkit.inventory;
 
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.api.API;
+import cn.nukkit.api.DeprecationDetails;
+import cn.nukkit.api.PowerNukkitOnly;
+import cn.nukkit.api.Since;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemID;
 import cn.nukkit.network.protocol.BatchPacket;
 import cn.nukkit.network.protocol.CraftingDataPacket;
+import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.MainLogger;
@@ -27,8 +32,14 @@ import java.util.zip.Deflater;
 public class CraftingManager {
 
     public final Collection<Recipe> recipes = new ArrayDeque<>();
-
+    
+    @Deprecated @DeprecationDetails(since = "1.3.2.0-PN", by = "Clourburst", reason = "Signature changed to DataPacket",
+        toBeRemovedAt = "1.4.0.0-PN", replaceWith = "packet0 (temporarily)")
     public static BatchPacket packet = null;
+    @PowerNukkitOnly @Since("1.3.2.0-PN")
+    @Deprecated @DeprecationDetails(since = "1.3.2.0-PN", by = "PowerNukkit", reason = "Temporary alternative to the packet field",
+            toBeRemovedAt = "1.4.0.0-PN")
+    public static DataPacket packet0 = null;
     protected final Map<Integer, Map<UUID, ShapedRecipe>> shapedRecipes = new Int2ObjectOpenHashMap<>();
 
     public final Map<Integer, FurnaceRecipe> furnaceRecipes = new Int2ObjectOpenHashMap<>();
@@ -225,7 +236,6 @@ public class CraftingManager {
     public void rebuildPacket() {
         CraftingDataPacket pk = new CraftingDataPacket();
         pk.cleanRecipes = true;
-
         for (Recipe recipe : this.getRecipes()) {
             if (recipe instanceof ShapedRecipe) {
                 pk.addShapedRecipe((ShapedRecipe) recipe);
@@ -233,7 +243,7 @@ public class CraftingManager {
                 pk.addShapelessRecipe((ShapelessRecipe) recipe);
             }
         }
-    
+
         for (Map<UUID, CartographyRecipe> map : cartographyRecipes.values()) {
             for (CartographyRecipe recipe : map.values()) {
                 pk.addCartographyRecipe(recipe);
@@ -269,8 +279,9 @@ public class CraftingManager {
         }
 
         pk.encode();
-
+        // TODO: find out whats wrong with compression
         packet = pk.compress(Deflater.BEST_COMPRESSION);
+        packet0 = pk;
     }
 
     public Collection<Recipe> getRecipes() {
